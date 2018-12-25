@@ -7,6 +7,7 @@ output: html_document
 
 library(ggplot2)
 library(plyr)
+library(data.table)
 
 beers <- read.csv("./data/Beers.csv")
 colnames(beers)[1] <- c("Beer_Name")
@@ -32,4 +33,73 @@ brew_count <- count(breweries$State)
 colnames(brew_count) <- c("State", "Brewery_Count")
 brew_count <- brew_count[with(brew_count,order(-Brewery_Count)), ]
 head(brew_count, 10)
+```
+
+
+
+<br/>
+
+#### Question 2
+
+```{r q2 }
+final <- merge(beers, breweries, by.x=c("Brewery_id"), by.y=c("Brew_ID"))
+head(final, 6)
+```
+
+
+<br/>
+
+#### Question 3
+
+```{r q3}
+colSums(is.na(final))
+```
+
+
+<br/>
+
+#### Question 4
+```{r q4, fig.height= 10}
+#Get Medians
+state_ibu_medians <- tapply(final$IBU, final$State, median, na.rm = T)
+state_ibu_medians <- data.frame(state_ibu_medians)
+
+#Reset Column Names
+setDT(state_ibu_medians , keep.rownames = TRUE)
+colnames(state_ibu_medians) <- c("State", "IBU_Medians")
+
+#Bar Plot
+p <- ggplot(data = state_ibu_medians, aes(x=State, y=IBU_Medians, width = .5), width = 1000) +
+    labs(title="IBU", x="State", y = "IBU") 
+
+p + geom_bar(stat="identity") +
+    theme(plot.title = element_text(hjust = 0.5), legend.position = "none") +
+    coord_flip() +
+    theme_minimal()
+```
+
+
+<br/>
+
+#### Question 5
+```{r q5}
+#State with max ABV
+final[which.max(final$ABV), "State"]
+
+#State with max IBU
+final[which.max(final$IBU), "State"]
+```
+
+<br/>  
+
+#### Question 6
+```{r q6}
+summary(final$ABV)
+```
+
+<br/>
+
+#### Question 7
+```{r q7}
+ggplot(final, aes(x=ABV, y=IBU)) + geom_point() +  geom_smooth(method=lm) #size=2, shape=23
 ```
