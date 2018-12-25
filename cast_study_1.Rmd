@@ -1,0 +1,35 @@
+---
+title: "Untitled"
+output: html_document
+---
+
+```{r setup, echo = FALSE}
+
+library(ggplot2)
+library(plyr)
+
+beers <- read.csv("./data/Beers.csv")
+colnames(beers)[1] <- c("Beer_Name")
+
+breweries <- read.csv("./data/Breweries.csv")
+colnames(breweries)[2] <- c("Brewery_Name")
+breweries$State <- trimws(breweries$State)
+```
+
+<br/>
+
+#### Introduction:
+The Hoppy Specter Brewery is looking to expand into a new U.S. State with their world-renowned heavily hopped "Pale as a Ghost" pale ale. Given the overwhelming bitterness of both their ethos and beer, they need to find the best home for their new location. They've asked Unique Consulting Svcs., LLC. to help them identify the new location.
+
+<br/>
+
+#### Question 1
+
+Given the big increase in local breweries over the last several years we decided to take a look at the number of breweries in each state. While we would not recomend opening in an overly saturated market, we still think a place that has an established local brewery scene would be best. This code creates a dataframe of states and the number of breweries.
+
+```{r q1}
+brew_count <- count(breweries$State)
+colnames(brew_count) <- c("State", "Brewery_Count")
+brew_count <- brew_count[with(brew_count,order(-Brewery_Count)), ]
+head(brew_count, 10)
+```
