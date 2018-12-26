@@ -1,0 +1,106 @@
+---
+title: "CODEBOOK"
+author: "unique(TeamName)"
+date: "December 26, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Codebook: Hoppy Specter Brewery Analysis
+
+
+### Data Sets
+
+The Hoppy Specter Analysis relies on two files contained in the <data> directory. These include: 
+
+* Beers.csv 
+  + Contains information about individual beers. 
+* Breweries.csv
+  + Contains informationa bout breweries producing beers. 
+  
+```{r}
+#Read in the beers and breweries files
+  Beers = read.csv("data/Beers.csv", stringsAsFactors = FALSE)
+  Breweries = read.csv("data/Breweries.csv", stringsAsFactors = FALSE)
+```
+  
+### Variable Names: 
+
+Initial variable names found in the data sets are: 
+
+#### Beers.csv Variables: 
+
+1. Name -- Specifies the Beer Name
+
+2. Beer_ID -- A unique identifier for the individual beer
+
+3. ABV -- Alcohol By Volume -- The value of alcohol in a beer by volume. Multiplying this number by 100% gives percent alcohol by volume. 
+  + If NA the value is missing. 
+
+4. IBU -- International Bitterness Units -- A numerical score used to evaluate the bitterness of individual beers. 
+  + If NA the value is missing. 
+  
+5. Brewery_id -- Unique identifier for the brewery that makes the beer. 
+  
+6. Style -- Presents the style of beer according to customary standards
+
+7. Ounces -- Default packaging size
+
+```{r}
+  names(Beers)
+```
+
+#### Breweries.csv Variables: 
+
+1. Brew_id -- Unique identifier for the brewery
+
+2. Name -- Specifies the name of the brewery
+
+3. City -- Specifies the City in which the brewery is located
+
+4. State -- Specifies the Abbreviation of the State in which the brewery is located
+
+```{r}
+  names(Breweries)
+```
+
+#### Data preparation: 
+
+The State records in the Breweries data have undesired white space in each record. We will remove that here. 
+
+```{r}
+Breweries$State = trimws(Breweries$State)
+```
+
+
+#### Combined Variable Table
+
+In order to utilize these variables, we will normalize them and merge the data set here. 
+
+```{r}
+# Set a common Brewery ID variable to merge on: 
+
+names(Breweries)[1] = "Brewery_id"
+
+# Merge the two dataframes
+
+MergedBrewing = merge(Beers,Breweries, by = "Brewery_id")
+
+# Fix the names conflict
+
+names(MergedBrewing)[2] = "Beer_Name"
+names(MergedBrewing)[8] = "Brewery_Name"
+head(MergedBrewing)
+```
+
+The final data frame contains the variables and types as follows: 
+
+```{r}
+variableName = names(MergedBrewing)
+types = sapply(MergedBrewing,class)
+variables = rbind (variableName,types)
+knitr::kable(variables)
+```
