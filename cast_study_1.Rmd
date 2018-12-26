@@ -8,6 +8,7 @@ output: html_document
 library(ggplot2)
 library(plyr)
 library(data.table)
+library(ggthemes)
 
 beers <- read.csv("./data/Beers.csv")
 colnames(beers)[1] <- c("Beer_Name")
@@ -69,13 +70,31 @@ setDT(state_ibu_medians , keep.rownames = TRUE)
 colnames(state_ibu_medians) <- c("State", "IBU_Medians")
 
 #Bar Plot
-p <- ggplot(data = state_ibu_medians, aes(x=State, y=IBU_Medians, width = .5), width = 1000) +
+p <- ggplot(data = state_ibu_medians, aes(x=State, y=IBU_Medians, width = .5)) +
     labs(title="IBU", x="State", y = "IBU") 
 
 p + geom_bar(stat="identity") +
     theme(plot.title = element_text(hjust = 0.5), legend.position = "none") +
     coord_flip() +
     theme_minimal()
+
+#Get Medians
+state_abv_medians <- tapply(final$ABV, final$State, median, na.rm = T)
+state_abv_medians <- data.frame(state_abv_medians)
+
+#Reset Column Names
+setDT(state_abv_medians , keep.rownames = TRUE)
+colnames(state_abv_medians) <- c("State", "ABV_Medians")
+
+#Bar Plot
+p <- ggplot(data = state_abv_medians, aes(x=State, y=ABV_Medians, width = .5)) +
+    labs(title="ABV", x="State", y = "ABV") 
+
+p + geom_bar(stat="identity") +
+    theme(plot.title = element_text(hjust = 0.5), legend.position = "none") +
+    coord_flip() +
+    theme_minimal()
+
 ```
 
 
@@ -101,5 +120,6 @@ summary(final$ABV)
 
 #### Question 7
 ```{r q7}
-ggplot(final, aes(x=ABV, y=IBU)) + geom_point() +  geom_smooth(method=lm) #size=2, shape=23
+p <- ggplot(final, aes(x=ABV, y=IBU)) + geom_point(shape=16) +  geom_smooth(method=lm) 
+p + theme_hc()+ scale_colour_hc()
 ```
