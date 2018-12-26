@@ -1,0 +1,200 @@
+---
+title: "Untitled"
+author: "Brian Waite"
+date: "December 23, 2018"
+output:
+    prettydoc::html_pretty:
+    theme: cayman
+    highlight: github
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Test Code
+
+#### Setup Analysis Environment
+
+This needs the libraries "reshape" and "ggplot2" 
+
+```{r}
+library(reshape2)
+library(ggplot2)
+```
+
+
+Read in the two data files. Requires they be in the working directory of this file. 
+```{r}
+
+Beers = read.csv("Beers.csv", stringsAsFactors = FALSE) 
+Breweries = read.csv("Breweries.csv", stringsAsFactors = FALSE)
+```
+
+Normalize the variable names in the two data sets
+
+1. TODO
+  + Ensure values are right type: 
+
+Remove leading spaces from States
+
+```{r}
+Breweries$State = trimws(Breweries$State)
+```
+
+### Answer Question 1: 
+
+How many breweries are present in each state
+
+```{r}
+BreweriesPerState = as.data.frame(table(Breweries$State))
+#rename
+names(BreweriesPerState) = c("State", "Num of Breweries")
+#display
+knitr::kable(BreweriesPerState)
+```
+
+### Answer Question 2: Merge the two data frames. Print first and last 6 observations. 
+
+```{r}
+# Set a common Brewery ID variable to merge on: 
+
+names(Breweries)[1] = "Brewery_id"
+
+# Merge the two dataframes
+
+MergedBrewing = merge(Beers,Breweries, by = "Brewery_id")
+
+# Fix the names conflict
+
+names(MergedBrewing)[2] = "Beer Name"
+names(MergedBrewing)[8] = "Brewery Name"
+```
+
+Display the first 6 rows: 
+
+```{r}
+knitr::kable(head(MergedBrewing,6))
+```
+
+And the last 6 rows: 
+```{r}
+knitr::kable(tail(MergedBrewing,6))
+```
+
+### Answer Question 3: Report the number of NAs in each column. 
+
+```{r}
+# Find number of NAs in each column
+
+knitr::kable(colSums(is.na(MergedBrewing)))
+```
+
+### Answer Question 4: Compute the median alcohol content and international bitterness unit for each state. Plot a bar chart to compare.
+
+```{r}
+# Get list of states
+
+StateList = unique(MergedBrewing$State)
+StateList = as.data.frame(StateList)
+
+# Set up functions to get median IBU and ABV
+
+getStateIBU = function(State) { 
+  ibuList = MergedBrewing[which(MergedBrewing$State == State),]$IBU
+  medianIBU = median(ibuList, na.rm = TRUE)
+  return(medianIBU)
+  }
+
+getStateABV = function(State) { 
+  abvList = MergedBrewing[which(MergedBrewing$State == State),]$ABV
+  medianABV = median(abvList, na.rm = TRUE)
+  return(medianABV)
+}
+
+# Now use those functions to get the data and plot
+
+#Add the space in the StateList dataframe for the additional values
+StateList$IBU = c(1:length(StateList$State))
+StateList$ABV = c(1:length(StateList$State))
+
+#Get the median values for IBU and ABV for each state
+for (states in StateList$StateList) { 
+  StateList[which(StateList$StateList == states),"IBU"] = getStateIBU(states)
+  StateList[which(StateList$StateList == states),"ABV"] = getStateABV(states)*100
+}
+
+#Get rid of the NA IBU value for South Dakota
+StateList[which(is.na(StateList$IBU)),"IBU"] = 0
+
+#Fix the names
+names(StateList) = c("State", "IBU", "ABV") 
+
+#Now plot the data
+
+PlotList = melt(StateList, id.vars = "State", measure.vars = c("IBU","ABV"))
+
+#Bar plot of the IBU and ABV data by state
+
+library(ggplot2)
+ggplot(PlotList, aes(reorder(PlotList$State,PlotList$value), PlotList$value)) +   
+  geom_bar(aes(fill = PlotList$variable), position = "dodge", stat="identity") + xlab("State") + ylab("IBU Value / ABV Percent") + ggtitle("Median Alcohol By Vol. (ABV) and Bitterness (IBU) By State") + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + theme_minimal() + coord_flip()
+
+```
+
+
+### Answer Question 5: Which state has the maximum alcoholic (ABV) beer? Which state has the most bitter (IBU) beer?
+
+Output the state with the highest ABV: 
+
+```{r}
+knitr::kable(MergedBrewing[which(MergedBrewing$ABV == max(MergedBrewing$ABV, na.rm = TRUE)),"State"])
+```
+
+Output the state with the most bitter beer: 
+
+```{r}
+knitr::kable(MergedBrewing[which(MergedBrewing$IBU == max(MergedBrewing$IBU, na.rm = TRUE)),"State"])
+```
+
+### Answer Question 6: Summary statistics for the ABV variable. 
+
+```{r}
+
+summary(MergedBrewing$ABV)
+
+```
+
+### Answer Question 7: Is there an apparent relationship between the bitterness of the beer and its alcoholic content? Draw a scatter plot.
+
+Looking at the graph below: 
+
+```{r}
+#Scatterplot of ABV vs IBU
+
+#Note: Plot drops NA Values
+
+ggplot(MergedBrewing, aes(x=ABV*100, y=IBU)) +
+  geom_point(shape=3) +
+  #geom_density2d() + 
+  stat_density_2d(aes(fill = ..level..), geom = "polygon") +
+  scale_fill_continuous(low="lavenderblush", high="purple") +
+  geom_smooth(method=lm) + xlab("Alcohol By Volume (%)") + ylab("International Bitterness Units (IBU)") + ggtitle("Relationship Between Bitterness and Alcohol By Volume") + theme_minimal()
+```
+
+It does appear that there is a direct, near linear relationship between the bitterness of a beer and the alcohol content. This relationship is very strong for lower values of alcohol by volume. Given that the data have a seemingly linear relationship, we can run a Pearson's Correlation test to determine the significance of this relationship. 
+
+```{r}
+# conduct a Pearson's correlation test on ABV and IBU. Test omits na values by default. 
+test = cor.test(MergedBrewing$ABV,MergedBrewing$IBU)
+print(test)
+SharedVariance = (test$estimate^2) * 100
+print(as.numeric(SharedVariance[1]))
+
+```
+
+As we can see from above, the correlation between ABV and IBU is overwhelmingly statistically significant (p < 2.2 x 10^-16^) and has a Pearson's R of 0.671. In other words, the two data sets have a shared variance of 44.97%. 
+
+#### What does this mean? 
+
+Two variables with no correlation would have a Pearson's R of Zero (0). Two variables with direct correlation would have a Pearson's R of 1 (or -1). Our correlation of 0.671 demonstrates that ABV and IBU are strongly correlated, assuming the data meet the assumptions of the Pearson's test. Looking at the data above, we can be confident we have met these assumptions. 
