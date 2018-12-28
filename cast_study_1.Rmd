@@ -1,5 +1,5 @@
 ---
-title: "Untitled"
+title: "Case Study 1"
 output: html_document
 ---
 
@@ -33,7 +33,8 @@ Given the big increase in local breweries over the last several years we decided
 brew_count <- count(breweries$State)
 colnames(brew_count) <- c("State", "Brewery_Count")
 brew_count <- brew_count[with(brew_count,order(-Brewery_Count)), ]
-head(brew_count, 10)
+# head(brew_count, 10)
+knitr::kable(brew_count)
 ```
 
 
@@ -41,26 +42,31 @@ head(brew_count, 10)
 <br/>
 
 #### Question 2
+This code merges the Beers and Breweries data on the brewery id (variable names Brewery_id and Brew ID respectivley).
 
 ```{r q2 }
 final <- merge(beers, breweries, by.x=c("Brewery_id"), by.y=c("Brew_ID"))
-head(final, 6)
+knitr::kable(head(final, 6))
 ```
 
 
 <br/>
 
 #### Question 3
+This code finds the NA values and then sums the totals for each column. This will allow us to see if there is any data we might need to impute.
 
 ```{r q3}
-colSums(is.na(final))
+knitr::kable(colSums(is.na(final)))
+
 ```
 
 
 <br/>
 
 #### Question 4
-```{r q4, fig.height= 10}
+The "Pale as a Ghost" pale ale is the flagship beer for The Hoppy Specter Brewery and it scores high in ABV (alchol by volume) and IBU (bitterness). We would like to get a broad overview of the genral taste trends for each state when it comes to ABV and IBU. The code below gets the median ABV and IBU for each state and then creates barplots using ggplot2.
+
+```{r q4_ibu_medians, fig.height= 10}
 #Get Medians
 state_ibu_medians <- tapply(final$IBU, final$State, median, na.rm = T)
 state_ibu_medians <- data.frame(state_ibu_medians)
@@ -77,8 +83,12 @@ p + geom_bar(stat="identity") +
     theme(plot.title = element_text(hjust = 0.5), legend.position = "none") +
     coord_flip() +
     theme_minimal()
+```
 
-#Get Medians
+
+```{r q4_abv_medians, fig.height= 10}
+
+#ABV Medians
 state_abv_medians <- tapply(final$ABV, final$State, median, na.rm = T)
 state_abv_medians <- data.frame(state_abv_medians)
 
@@ -94,13 +104,13 @@ p + geom_bar(stat="identity") +
     theme(plot.title = element_text(hjust = 0.5), legend.position = "none") +
     coord_flip() +
     theme_minimal()
-
 ```
 
 
 <br/>
 
 #### Question 5
+Given that our client\'s beer is very strong and bitter, we would like to study markets with these same specs. The code below returns the states with the highest ABV and IBU.
 ```{r q5}
 #State with max ABV
 final[which.max(final$ABV), "State"]
