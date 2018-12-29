@@ -3,19 +3,28 @@ title: "Case Study 1"
 output: html_document
 ---
 
-```{r setup, echo = FALSE}
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
 
 library(ggplot2)
 library(plyr)
 library(data.table)
 library(ggthemes)
 
-beers <- read.csv("./data/Beers.csv")
-colnames(beers)[1] <- c("Beer_Name")
+#Read in the beers and breweries files
+Beers = read.csv("data/Beers.csv", stringsAsFactors = FALSE)
+Breweries = read.csv("data/Breweries.csv", stringsAsFactors = FALSE)
 
-breweries <- read.csv("./data/Breweries.csv")
-colnames(breweries)[2] <- c("Brewery_Name")
-breweries$State <- trimws(breweries$State)
+#Tidy up the data
+
+#Trim whitespace from the State abbreviation
+
+Breweries$State = trimws(Breweries$State)
+
+# Set a common Brewery ID variable to merge on: 
+
+names(Breweries)[1] = "Brewery_id"
+
 ```
 
 <br/>
@@ -27,48 +36,79 @@ The Hoppy Specter Brewery is looking to expand into a new U.S. State with their 
 
 #### Question 1
 
-Given the big increase in local breweries over the last several years we decided to take a look at the number of breweries in each state. While we would not recomend opening in an overly saturated market, we still think a place that has an established local brewery scene would be best. This code creates a dataframe of states and the number of breweries.
+Given the big increase in local breweries over the last several years we decided to take a look at the number of breweries in each state. While we would not recomend opening in an overly saturated market, we still think a place that has an established local brewery scene would be best. We wrote some code that helps us to identify the number of breweries present in each state. 
 
 ```{r q1}
-brew_count <- count(breweries$State)
+brew_count <- count(Breweries$State)
 colnames(brew_count) <- c("State", "Brewery_Count")
 brew_count <- brew_count[with(brew_count,order(-Brewery_Count)), ]
 # head(brew_count, 10)
 knitr::kable(brew_count)
 ```
 
+<br/> 
 
+As we can see from the above, Colorado's market is likely saturated. States like Pennsylvania, Massachussets, Washington or Indiana might be more ripe for new opportunities. 
 
 <br/>
 
-#### Question 2
-This code merges the Beers and Breweries data on the brewery id (variable names Brewery_id and Brew ID respectivley).
+#### Preparing the data for deeper analysis: 
+
+<br/>
+
+In order to provide the best possible data for our customer, Unique Consulting drew upon multiple data sets to best inform their decision making. Unfortunately, this data required some work to put in a proper form to support analysis. No billable hours were spent on these tasks. Tasks included: 
+
+1. Merging the data sets into a single data set capable of allowing comparisons needed. 
 
 ```{r q2 }
-final <- merge(beers, breweries, by.x=c("Brewery_id"), by.y=c("Brew_ID"))
-knitr::kable(head(final, 6))
+# Merge the two dataframes
+
+MergedBrewing = merge(Beers,Breweries, by = "Brewery_id")
+
+# Fix the names conflict
+
+names(MergedBrewing)[2] = "Beer_Name"
+names(MergedBrewing)[8] = "Brewery_Name"
+head(MergedBrewing)
+
 ```
 
+As an example, here are the first 6 rows: 
+
+```{r}
+knitr::kable(head(MergedBrewing,6))
+```
+
+and the last 6 rows: 
+```{r}
+knitr::kable(tail(MergedBrewing,6))
+```
+
+2. In order to prepare for this analysis, we also needed to identify the number of values missing in the data set. We found the following results: 
 
 <br/>
-
-#### Question 3
-This code finds the NA values and then sums the totals for each column. This will allow us to see if there is any data we might need to impute.
 
 ```{r q3}
-knitr::kable(colSums(is.na(final)))
+
+knitr::kable(colSums(is.na(MergedBrewing)))
+
 
 ```
 
 
 <br/>
 
-#### Question 4
-The "Pale as a Ghost" pale ale is the flagship beer for The Hoppy Specter Brewery and it scores high in ABV (alchol by volume) and IBU (bitterness). We would like to get a broad overview of the genral taste trends for each state when it comes to ABV and IBU. The code below gets the median ABV and IBU for each state and then creates barplots using ggplot2.
+At some points in the analysis below, the missing values are not considered. We've identified those areas of concern below. 
+
+#### The market for "Pale as a Ghost" Pale Ale: 
+
+<br/> 
+
+The "Pale as a Ghost" pale ale is the flagship beer for The Hoppy Specter Brewery and it scores high in ABV (alchol by volume) and IBU (bitterness). We would like to get a broad overview of the general taste trends for each state when it comes to ABV and IBU. The plots below show the median ABV and IBU for each state.
 
 ```{r q4_ibu_medians, fig.height= 10}
 #Get Medians
-state_ibu_medians <- tapply(final$IBU, final$State, median, na.rm = T)
+state_ibu_medians <- tapply(MergedBrewing$IBU, MergedBrewing$State, median, na.rm = T)
 state_ibu_medians <- data.frame(state_ibu_medians)
 
 #Reset Column Names
@@ -89,7 +129,7 @@ p + geom_bar(stat="identity") +
 ```{r q4_abv_medians, fig.height= 10}
 
 #ABV Medians
-state_abv_medians <- tapply(final$ABV, final$State, median, na.rm = T)
+state_abv_medians <- tapply(MergedBrewing$ABV, MergedBrewing$State, median, na.rm = T)
 state_abv_medians <- data.frame(state_abv_medians)
 
 #Reset Column Names
@@ -113,23 +153,23 @@ p + geom_bar(stat="identity") +
 Given that our client\'s beer is very strong and bitter, we would like to study markets with these same specs. The code below returns the states with the highest ABV and IBU.
 ```{r q5}
 #State with max ABV
-final[which.max(final$ABV), "State"]
+MergedBrewing[which.max(MergedBrewing$ABV), "State"]
 
 #State with max IBU
-final[which.max(final$IBU), "State"]
+MergedBrewing[which.max(MergedBrewing$IBU), "State"]
 ```
 
 <br/>  
 
 #### Question 6
 ```{r q6}
-summary(final$ABV)
+summary(MergedBrewing$ABV)
 ```
 
 <br/>
 
 #### Question 7
 ```{r q7}
-p <- ggplot(final, aes(x=ABV, y=IBU)) + geom_point(shape=16) +  geom_smooth(method=lm) 
+p <- ggplot(MergedBrewing, aes(x=ABV, y=IBU)) + geom_point(shape=16) +  geom_smooth(method=lm) 
 p + theme_hc()+ scale_colour_hc()
 ```
