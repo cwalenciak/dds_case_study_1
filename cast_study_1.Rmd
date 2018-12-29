@@ -52,7 +52,6 @@ As we can see from the above, Colorado's market is likely saturated. States like
 
 <br/>
 
-
 #### Preparing the data for deeper analysis: 
 
 <br/>
@@ -71,6 +70,7 @@ MergedBrewing = merge(Beers,Breweries, by = "Brewery_id")
 names(MergedBrewing)[2] = "Beer_Name"
 names(MergedBrewing)[8] = "Brewery_Name"
 head(MergedBrewing)
+
 ```
 
 As an example, here are the first 6 rows: 
@@ -88,10 +88,10 @@ knitr::kable(tail(MergedBrewing,6))
 
 <br/>
 
-
 ```{r q3}
 
 knitr::kable(colSums(is.na(MergedBrewing)))
+
 
 ```
 
