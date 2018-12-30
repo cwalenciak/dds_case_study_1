@@ -120,12 +120,12 @@ colnames(state_ibu_medians) <- c("State", "IBU_Medians")
 
 #Bar Plot
 p <- ggplot(data = state_ibu_medians, aes(x=State, y=IBU_Medians, width = .5)) +
-    labs(title="IBU", x="State", y = "IBU")
+    labs(title="Median IBU", x="State", y = "IBU")
 
 p + geom_bar(stat="identity") +
-    theme(plot.title = element_text(hjust = 0.5), legend.position = "none") +
-    coord_flip() +
-    theme_minimal()
+    coord_flip() + 
+    theme_minimal() +
+    theme(plot.title = element_text(hjust = 0.5), legend.position = "none")
 ```
 
 
@@ -141,12 +141,12 @@ colnames(state_abv_medians) <- c("State", "ABV_Medians")
 
 #Bar Plot
 p <- ggplot(data = state_abv_medians, aes(x=State, y=ABV_Medians, width = .5)) +
-    labs(title="ABV", x="State", y = "ABV")
+    labs(title="Median ABV", x="State", y = "ABV")
 
 p + geom_bar(stat="identity") +
-    theme(plot.title = element_text(hjust = 0.5), legend.position = "none") +
     coord_flip() +
-    theme_minimal()
+    theme_minimal() +
+    theme(plot.title = element_text(hjust = 0.5), legend.position = "none") 
 ```
 
 
