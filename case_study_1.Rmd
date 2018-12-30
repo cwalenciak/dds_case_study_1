@@ -2,7 +2,7 @@
 title: "Case Study 1"
 output: html_document
 ---
-This needs the libraries "reshape" and "ggplot2"  ,"MultiClust" from  install.packages("BiocManager") 
+This needs the libraries "reshape" and "ggplot2"  ,"MultiClust" from  install.packages("BiocManager")
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -22,7 +22,7 @@ Breweries = read.csv("data/Breweries.csv", stringsAsFactors = FALSE)
 
 Breweries$State = trimws(Breweries$State)
 
-# Set a common Brewery ID variable to merge on: 
+# Set a common Brewery ID variable to merge on:
 
 names(Breweries)[1] = "Brewery_id"
 
@@ -37,7 +37,7 @@ The Hoppy Specter Brewery is looking to expand into a new U.S. State with their 
 
 #### Question 1
 
-Given the big increase in local breweries over the last several years we decided to take a look at the number of breweries in each state. While we would not recomend opening in an overly saturated market, we still think a place that has an established local brewery scene would be best. We wrote some code that helps us to identify the number of breweries present in each state. 
+Given the big increase in local breweries over the last several years we decided to take a look at the number of breweries in each state. While we would not recomend opening in an overly saturated market, we still think a place that has an established local brewery scene would be best. We wrote some code that helps us to identify the number of breweries present in each state.
 
 ```{r q1}
 brew_count <- count(Breweries$State)
@@ -47,19 +47,19 @@ brew_count <- brew_count[with(brew_count,order(-Brewery_Count)), ]
 knitr::kable(brew_count)
 ```
 
-<br/> 
+<br/>
 
-As we can see from the above, Colorado's market is likely saturated. States like Pennsylvania, Massachussets, Washington or Indiana might be more ripe for new opportunities. 
+As we can see from the above, Colorado's market is likely saturated. States like Pennsylvania, Massachussets, Washington or Indiana might be more ripe for new opportunities.
 
 <br/>
 
-#### Preparing the data for deeper analysis: 
+#### Preparing the data for deeper analysis:
 
 <br/>
 
-In order to provide the best possible data for our customer, Unique Consulting drew upon multiple data sets to best inform their decision making. Unfortunately, this data required some work to put in a proper form to support analysis. No billable hours were spent on these tasks. Tasks included: 
+In order to provide the best possible data for our customer, Unique Consulting drew upon multiple data sets to best inform their decision making. Unfortunately, this data required some work to put in a proper form to support analysis. No billable hours were spent on these tasks. Tasks included:
 
-1. Merging the data sets into a single data set capable of allowing comparisons needed. 
+1. Merging the data sets into a single data set capable of allowing comparisons needed.
 
 ```{r q2 }
 # Merge the two dataframes
@@ -75,18 +75,18 @@ head(MergedBrewing)
 
 ```
 
-As an example, here are the first 6 rows: 
+As an example, here are the first 6 rows:
 
 ```{r}
 knitr::kable(head(MergedBrewing,6))
 ```
 
-and the last 6 rows: 
+and the last 6 rows:
 ```{r}
 knitr::kable(tail(MergedBrewing,6))
 ```
 
-2. In order to prepare for this analysis, we also needed to identify the number of values missing in the data set. We found the following results: 
+2. In order to prepare for this analysis, we also needed to identify the number of values missing in the data set. We found the following results:
 
 <br/>
 
@@ -98,13 +98,13 @@ knitr::kable(colSums(is.na(MergedBrewing)))
 ```
 
 
-<br/>  
+<br/>
 
-At some points in the analysis below, the missing values are not considered. We've identified those areas of concern below. 
+At some points in the analysis below, the missing values are not considered. We've identified those areas of concern below.
 
-<br/>  
+#### The market for "Pale as a Ghost" Pale Ale:
 
-#### The market for "Pale as a Ghost" Pale Ale: 
+<br/>
 
 The "Pale as a Ghost" pale ale is the flagship beer for The Hoppy Specter Brewery and it scores high in ABV (alchol by volume) and IBU (bitterness). We would like to get a broad overview of the general taste trends for each state when it comes to ABV and IBU. The plots below show the median ABV and IBU for each state.
 
@@ -120,12 +120,12 @@ colnames(state_ibu_medians) <- c("State", "IBU_Medians")
 
 #Bar Plot
 p <- ggplot(data = state_ibu_medians, aes(x=State, y=IBU_Medians, width = .5)) +
-    labs(title="Median IBU", x="State", y = "IBU") 
+    labs(title="IBU", x="State", y = "IBU")
 
 p + geom_bar(stat="identity") +
+    theme(plot.title = element_text(hjust = 0.5), legend.position = "none") +
     coord_flip() +
-    theme_minimal() + 
-    theme(plot.title = element_text(hjust = 0.5), legend.position = "none")
+    theme_minimal()
 ```
 
 
@@ -140,15 +140,13 @@ setDT(state_abv_medians , keep.rownames = TRUE)
 colnames(state_abv_medians) <- c("State", "ABV_Medians")
 
 #Bar Plot
-p <- ggplot(data = state_abv_medians, aes(x=State, y=ABV_Medians, width = .5)) + 
-    labs(title="Median ABV", x="State", y = "ABV")
+p <- ggplot(data = state_abv_medians, aes(x=State, y=ABV_Medians, width = .5)) +
+    labs(title="ABV", x="State", y = "ABV")
 
 p + geom_bar(stat="identity") +
+    theme(plot.title = element_text(hjust = 0.5), legend.position = "none") +
     coord_flip() +
-    theme_minimal() + 
-    theme(plot.title = element_text(hjust = 0.5), legend.position = "none") 
-
-
+    theme_minimal()
 ```
 
 
@@ -166,12 +164,24 @@ MergedBrewing[which.max(MergedBrewing$IBU), "State"]
 
 <br/>  
 
-#### Question 6
+In conducting our analysis, it is useful to examine the statistics of the Alcohol By Volume in order to make well informed comparisons.
 ```{r q6}
 summary(MergedBrewing$ABV)
 ```
+<br />
+Perhaps a boxplot is more helpful to visualize the same data:
+
+```{r}
+#Plot a horizontal boxplot of the ABV summary stats.
+
+boxplot(MergedBrewing$ABV,data = MergedBrewing, main = "Alcohol by Volume", horizontal = TRUE)
+```
 
 <br/>
+
+As we can see from the summary statistics and dataplot, a full 50% of the measured beers fall between 0.05 and 0.07 ABV. Our recommendation is that Pale as a Ghost should not have an alcohol value far outside of this range.
+
+<br />
 
 #### Question 7
 ```{r q7}
