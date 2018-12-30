@@ -11,7 +11,7 @@ library(ggplot2)
 library(plyr)
 library(data.table)
 library(ggthemes)
-library(multiClust)
+library(ggpubr)
 #Read in the beers and breweries files
 Beers = read.csv("data/Beers.csv", stringsAsFactors = FALSE)
 Breweries = read.csv("data/Breweries.csv", stringsAsFactors = FALSE)
@@ -171,11 +171,5 @@ summary(MergedBrewing$ABV)
 
 #### Question 7
 ```{r q7}
-MergedBrewing <- na.omit(MergedBrewing)
-ggplot(MergedBrewing, aes(x=nor.min.max(ABV), y=nor.min.max(IBU))) +
-  geom_point(shape=3) +
-  #geom_density2d() + 
-  stat_density_2d(aes(fill = ..level..), geom = "polygon") +
-  scale_fill_continuous(low="lavenderblush", high="purple") +
-  geom_smooth(method=lm) + xlab("Alcohol By Volume (normalized)") + ylab("International Bitterness Units (normalized)") + ggtitle("Relationship Between Bitterness and Alcohol By Volume") + theme_minimal()
+ggscatter(MergedBrewing,x="ABV",y="IBU",add="reg.line",conf.int="T",cor.coef="T",color = "blue",ellipse.type="norm",ellipse="F")+theme_minimal()+ stat_density_2d(aes(fill = ..level..), geom = "polygon")+scale_fill_continuous(low="lavenderblush", high="purple")
 ```
