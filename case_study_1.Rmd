@@ -98,13 +98,13 @@ knitr::kable(colSums(is.na(MergedBrewing)))
 ```
 
 
-<br/>
+<br/>  
 
 At some points in the analysis below, the missing values are not considered. We've identified those areas of concern below. 
 
-#### The market for "Pale as a Ghost" Pale Ale: 
+<br/>  
 
-<br/> 
+#### The market for "Pale as a Ghost" Pale Ale: 
 
 The "Pale as a Ghost" pale ale is the flagship beer for The Hoppy Specter Brewery and it scores high in ABV (alchol by volume) and IBU (bitterness). We would like to get a broad overview of the general taste trends for each state when it comes to ABV and IBU. The plots below show the median ABV and IBU for each state.
 
@@ -120,12 +120,12 @@ colnames(state_ibu_medians) <- c("State", "IBU_Medians")
 
 #Bar Plot
 p <- ggplot(data = state_ibu_medians, aes(x=State, y=IBU_Medians, width = .5)) +
-    labs(title="IBU", x="State", y = "IBU") 
+    labs(title="Median IBU", x="State", y = "IBU") 
 
 p + geom_bar(stat="identity") +
-    theme(plot.title = element_text(hjust = 0.5), legend.position = "none") +
     coord_flip() +
-    theme_minimal()
+    theme_minimal() + 
+    theme(plot.title = element_text(hjust = 0.5), legend.position = "none")
 ```
 
 
@@ -140,13 +140,15 @@ setDT(state_abv_medians , keep.rownames = TRUE)
 colnames(state_abv_medians) <- c("State", "ABV_Medians")
 
 #Bar Plot
-p <- ggplot(data = state_abv_medians, aes(x=State, y=ABV_Medians, width = .5)) +
-    labs(title="ABV", x="State", y = "ABV") 
+p <- ggplot(data = state_abv_medians, aes(x=State, y=ABV_Medians, width = .5)) + 
+    labs(title="Median ABV", x="State", y = "ABV")
 
 p + geom_bar(stat="identity") +
-    theme(plot.title = element_text(hjust = 0.5), legend.position = "none") +
     coord_flip() +
-    theme_minimal()
+    theme_minimal() + 
+    theme(plot.title = element_text(hjust = 0.5), legend.position = "none") 
+
+
 ```
 
 
