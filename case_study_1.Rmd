@@ -2,7 +2,7 @@
 title: "Case Study 1"
 output: html_document
 ---
-This needs the libraries "reshape" and "ggplot2"  ,"MultiClust" from  install.packages("BiocManager")
+This needs the libraries "reshape" and "ggplot2"  
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -119,13 +119,15 @@ setDT(state_ibu_medians , keep.rownames = TRUE)
 colnames(state_ibu_medians) <- c("State", "IBU_Medians")
 
 #Bar Plot
-p <- ggplot(data = state_ibu_medians, aes(x=State, y=IBU_Medians, width = .5)) +
-    labs(title="Median IBU", x="State", y = "IBU")
+plot1 <- theme(plot.title = element_text(face = "bold.italic",size= 12, color = "red",hjust=0.5), axis.text.x = element_text(size = 6, face ="bold.italic"), axis.text.y = element_text(size=6,face = "bold.italic"))
 
-p + geom_bar(stat="identity") +
-    coord_flip() + 
-    theme_minimal() +
-    theme(plot.title = element_text(hjust = 0.5), legend.position = "none")
+
+
+ggplot(data = state_ibu_medians, aes(x=State, y=IBU_Medians, width = .5,fill=State)) +  geom_bar(stat="identity") + labs(title="Median IBU", x="State", y = "IBU")  + plot1 + coord_flip()
+    
+
+#p + geom_bar(stat="identity") + theme1
+#    coord_flip() 
 ```
 
 
@@ -140,13 +142,11 @@ setDT(state_abv_medians , keep.rownames = TRUE)
 colnames(state_abv_medians) <- c("State", "ABV_Medians")
 
 #Bar Plot
-p <- ggplot(data = state_abv_medians, aes(x=State, y=ABV_Medians, width = .5)) +
-    labs(title="Median ABV", x="State", y = "ABV")
+plot1 <- theme(plot.title = element_text(face = "bold.italic",size= 12, color = "red",hjust=0.5), axis.text.x = element_text(size = 6, face ="bold.italic"), axis.text.y = element_text(size=6,face = "bold.italic"))
 
-p + geom_bar(stat="identity") +
-    coord_flip() +
-    theme_minimal() +
-    theme(plot.title = element_text(hjust = 0.5), legend.position = "none") 
+
+
+ggplot(data = state_abv_medians, aes(x=State, y=ABV_Medians, width = .5,fill=State)) +  geom_bar(stat="identity") + labs(title="Median ABV", x="State", y = "ABV")  + plot1 + coord_flip()
 ```
 
 
