@@ -35,7 +35,7 @@ The Hoppy Specter Brewery is looking to expand into a new U.S. State with their 
 
 <br/>
 
-#### Question 1
+#### National brewery situation assessment: 
 
 Given the big increase in local breweries over the last several years we decided to take a look at the number of breweries in each state. While we would not recomend opening in an overly saturated market, we still think a place that has an established local brewery scene would be best. We wrote some code that helps us to identify the number of breweries present in each state.
 
@@ -152,8 +152,13 @@ p + geom_bar(stat="identity") +
 
 <br/>
 
-#### Question 5
-Given that our client\'s beer is very strong and bitter, we would like to study markets with these same specs. The code below returns the states with the highest ABV and IBU.
+#### State preferences for high alcohol content / bitterness. 
+
+<br/> 
+Given that our client\'s beer is very strong and bitter, we would like to study markets with these same specs. Through our analysis, we identify the below states as having the max Alcohol By Volume and the max IBU. 
+
+<br/> 
+
 ```{r q5}
 #State with max ABV
 MergedBrewing[which.max(MergedBrewing$ABV), "State"]
@@ -164,7 +169,11 @@ MergedBrewing[which.max(MergedBrewing$IBU), "State"]
 
 <br/>  
 
+#### Further analysis of Alcohol By Volume. 
+
+<br/> 
 In conducting our analysis, it is useful to examine the statistics of the Alcohol By Volume in order to make well informed comparisons.
+<br/> 
 ```{r q6}
 summary(MergedBrewing$ABV)
 ```
