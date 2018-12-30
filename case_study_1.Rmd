@@ -183,7 +183,18 @@ As we can see from the summary statistics and dataplot, a full 50% of the measur
 
 <br />
 
-#### Question 7
+#### Is there a relationship between Bitterness and Alcohol by Volume? 
+<br/>
+
+Our client requested an analysis of the relationship between Bitterness and Alcohol by Volume in order to help drive their future manufacturing decisions and to refine their brewing processes. In order to help answer this question, Unique Consulting offer the below analysis. 
+
+<br /> 
 ```{r q7}
 ggscatter(MergedBrewing,x="ABV",y="IBU",add="reg.line",conf.int="T",cor.coef="T",color = "blue",ellipse.type="norm",ellipse="F")+theme_minimal()+ stat_density_2d(aes(fill = ..level..), geom = "polygon")+scale_fill_continuous(low="lavenderblush", high="purple")
 ```
+
+<br /> As we can see from the scatterplot above and the over-laid density plot, there appears to be some indication of a linear relationship between Alcohol by Volume (ABV) and International Bitterness Units (IBU). Because this is a linear relationship, we are able to execute statistical tests that define the correlation of these two characteristics more explicitly. 
+
+The R-value shown above of 0.67 indicates a relatively strong linear relationship between the two variables. Also, a correlation test indicates that the probability that there is zero correlation between the two variables to be very small (p < 2.2 x 10**-16). 
+
+We realize that this is all very "nerd-speak", but when it comes down to it, we interpret this to mean that there is some correlation between the Bitterness and Alcohol by Volume and that this could be used to make predictions -- for example -- about the taste of a beer with a specific alcohol content. 
