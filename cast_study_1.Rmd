@@ -72,6 +72,7 @@ names(MergedBrewing)[2] = "Beer_Name"
 names(MergedBrewing)[8] = "Brewery_Name"
 head(MergedBrewing)
 
+
 ```
 
 As an example, here are the first 6 rows: 
@@ -109,6 +110,7 @@ The "Pale as a Ghost" pale ale is the flagship beer for The Hoppy Specter Brewer
 
 ```{r q4_ibu_medians, fig.height= 10}
 #Get Medians
+MergedBrewing <- na.omit(MergedBrewing)
 state_ibu_medians <- tapply(MergedBrewing$IBU, MergedBrewing$State, median, na.rm = T)
 state_ibu_medians <- data.frame(state_ibu_medians)
 
