@@ -30,13 +30,12 @@ names(Breweries)[1] = "Brewery_id"
 
 <br/>
 
-#### Introduction:
+#### **Introduction:**
 The Hoppy Specter Brewery is looking to expand into a new U.S. State with their world-renowned heavily hopped "Pale as a Ghost" pale ale. Given the overwhelming bitterness of both their ethos and beer, they need to find the best home for their new location. They've asked Unique Consulting Svcs., LLC. to help them identify the new location.
 
 <br/>
 
-#### National brewery situation assessment: 
-
+#### **National brewery situation assessment:** 
 Given the big increase in local breweries over the last several years we decided to take a look at the number of breweries in each state. While we would not recomend opening in an overly saturated market, we still think a place that has an established local brewery scene would be best. We wrote some code that helps us to identify the number of breweries present in each state.
 
 ```{r q1}
@@ -53,7 +52,7 @@ As we can see from the above, Colorado's market is likely saturated. States like
 
 <br/>
 
-#### Preparing the data for deeper analysis:
+#### **Preparing the data for deeper analysis:**
 
 In order to provide the best possible data for our customer, Unique Consulting drew upon multiple data sets to best inform their decision making. Unfortunately, this data required some work to put in a proper form to support analysis. No billable hours were spent on these tasks. Tasks included:
 
@@ -100,7 +99,7 @@ At some points in the analysis below, the missing values are not considered. We'
 
 <br/>
 
-#### The market for "Pale as a Ghost" Pale Ale:
+#### **The market for "Pale as a Ghost" Pale Ale:**
 
 The "Pale as a Ghost" pale ale is the flagship beer for The Hoppy Specter Brewery and it scores high in ABV (alchol by volume) and IBU (bitterness). We would like to get a broad overview of the general taste trends for each state when it comes to ABV and IBU. The plots below show the median ABV and IBU for each state.
 
@@ -149,7 +148,7 @@ ggplot(data = state_abv_medians, aes(x=reorder(State,-ABV_Medians), y=ABV_Median
 
 <br/>
 
-#### State preferences for high alcohol content / bitterness. 
+#### **State preferences for high alcohol content / bitterness.** 
 
 Given that our client\'s beer is very strong and bitter, we would like to study markets with these same specs. Through our analysis, we identify the below states as having the max Alcohol By Volume and the max IBU. 
 
@@ -167,7 +166,7 @@ We can see that Colorado has the highest ABV value and Oregon has the highest IB
 
 <br/>  
 
-#### Further analysis of Alcohol By Volume. 
+#### **Further analysis of Alcohol By Volume.** 
 
 In conducting our analysis, it is useful to examine the statistics of the Alcohol By Volume in order to make well informed comparisons.
 <br/> 
@@ -191,18 +190,19 @@ As we can see from the summary statistics and dataplot, a full 50% of the measur
 
 <br />
 
-#### Is there a relationship between Bitterness and Alcohol by Volume? 
+#### **Is there a relationship between Bitterness and Alcohol by Volume?** 
 
 Our client requested an analysis of the relationship between Bitterness and Alcohol by Volume in order to help drive their future manufacturing decisions and to refine their brewing processes. In order to help answer this question, Unique Consulting offer the below analysis. 
 
 <br /> 
+
 ```{r q7}
 scatterplot = ggscatter(na.omit(MergedBrewing),x="ABV",y="IBU",add="reg.line",conf.int="T",cor.coef="T",color = "blue",ellipse.type="norm",ellipse="F")+theme_minimal()+ stat_density_2d(aes(fill = ..level..), geom = "polygon")+scale_fill_continuous(low="lavenderblush", high="purple")
 
 suppressWarnings(print(scatterplot))
 ```
 
-<br /> As we can see from the scatterplot above and the over-laid density plot, there appears to be some indication of a linear relationship between Alcohol by Volume (ABV) and International Bitterness Units (IBU). Because this is a linear relationship, we are able to execute statistical tests that define the correlation of these two characteristics more explicitly. 
+As we can see from the scatterplot above and the over-laid density plot, there appears to be some indication of a linear relationship between Alcohol by Volume (ABV) and International Bitterness Units (IBU). Because this is a linear relationship, we are able to execute statistical tests that define the correlation of these two characteristics more explicitly. 
 
 The R-value shown above of 0.67 indicates a relatively strong linear relationship between the two variables. Also, a correlation test indicates that the probability that there is zero correlation between the two variables to be very small (p < 2.2 x 10**-16). 
 
