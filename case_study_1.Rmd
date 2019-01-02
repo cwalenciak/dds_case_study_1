@@ -12,6 +12,7 @@ library(plyr)
 library(data.table)
 library(ggthemes)
 library(ggpubr)
+
 #Read in the beers and breweries files
 Beers = read.csv("data/Beers.csv", stringsAsFactors = FALSE)
 Breweries = read.csv("data/Breweries.csv", stringsAsFactors = FALSE)
@@ -19,115 +20,126 @@ Breweries = read.csv("data/Breweries.csv", stringsAsFactors = FALSE)
 #Tidy up the data
 
 #Trim whitespace from the State abbreviation
-
 Breweries$State = trimws(Breweries$State)
 
 # Set a common Brewery ID variable to merge on:
-
 names(Breweries)[1] = "Brewery_id"
 
 ```
 
 <br/>
 
-#### **Introduction:**
+### **Introduction**
 The Hoppy Specter Brewery is looking to expand into a new U.S. State with their world-renowned heavily hopped "Pale as a Ghost" pale ale. Given the overwhelming bitterness of both their ethos and beer, they need to find the best home for their new location. They've asked Unique Consulting Svcs., LLC. to help them identify the new location.
 
 <br/>
 
-#### **National brewery situation assessment:** 
+### **National brewery situation assessment** 
 Given the big increase in local breweries over the last several years we decided to take a look at the number of breweries in each state. While we would not recomend opening in an overly saturated market, we still think a place that has an established local brewery scene would be best. We wrote some code that helps us to identify the number of breweries present in each state.
 
 ```{r q1}
 brew_count <- count(Breweries$State)
 colnames(brew_count) <- c("State", "Brewery_Count")
 brew_count <- brew_count[with(brew_count,order(-Brewery_Count)), ]
-# head(brew_count, 10)
 knitr::kable(brew_count)
 ```
 
-<br/>
-
 As we can see from the above, Colorado's market is likely saturated. States like Pennsylvania, Massachussets, Washington or Indiana might be more ripe for new opportunities.
 
+<!--------------- QUESTION 2 ----------------------->
+
 <br/>
 
-#### **Preparing the data for deeper analysis:**
-
+### **Preparing the data for deeper analysis**
 In order to provide the best possible data for our customer, Unique Consulting drew upon multiple data sets to best inform their decision making. Unfortunately, this data required some work to put in a proper form to support analysis. No billable hours were spent on these tasks. Tasks included:
 
-1. Merging the data sets into a single data set capable of allowing comparisons needed.
+<br/>
+
+##### **Merge Data Sets:** 
+Merging the data sets into a single data set capable of allowing comparisons needed.
 
 ```{r q2 }
 # Merge the two dataframes
-
 MergedBrewing = merge(Beers,Breweries, by = "Brewery_id")
 
 # Fix the names conflict
-
 names(MergedBrewing)[2] = "Beer_Name"
 names(MergedBrewing)[8] = "Brewery_Name"
-
 ```
 
-As an example, here are the first 6 rows:
+<br/>  
 
-```{r}
-knitr::kable(head(MergedBrewing,6))
+<center>
+**First 6 rows of the Merged Data: **
+</center>
+
+<br/>  
+
+```{r, echo = FALSE}
+knitr::kable(head(MergedBrewing, 6))
 ```
 
-and the last 6 rows:
-```{r}
-knitr::kable(tail(MergedBrewing,6))
-```
+<br/>  
 
-2. In order to prepare for this analysis, we also needed to identify the number of values missing in the data set. We found the following results:
+<center>
+**Last 6 rows of the Merged Data: **  
+</center>
 
 <br/>
 
-```{r q3}
+```{r, echo = FALSE}
+knitr::kable(tail(MergedBrewing, 6))
+```
 
+<br/>
+
+<!--------------- QUESTION 3 ----------------------->
+
+##### **Missing Values:** 
+In order to prepare for this analysis, we also needed to identify the number of values missing in the data set. We found the following results:
+
+```{r q3, echo = FALSE}
 knitr::kable(colSums(is.na(MergedBrewing)))
-
-
 ```
 
+*At some points in the analysis below, the missing values are not considered. We've identified those areas of concern below.*
+
 
 <br/>
 
-At some points in the analysis below, the missing values are not considered. We've identified those areas of concern below.
+<!--------------- QUESTION 4 ----------------------->
 
-<br/>
-
-#### **The market for "Pale as a Ghost" Pale Ale:**
+### **The market for "Pale as a Ghost" Pale Ale**
 
 The "Pale as a Ghost" pale ale is the flagship beer for The Hoppy Specter Brewery and it scores high in ABV (alchol by volume) and IBU (bitterness). We would like to get a broad overview of the general taste trends for each state when it comes to ABV and IBU. The plots below show the median ABV and IBU for each state.
 
-```{r q4_ibu_medians, fig.height= 10}
+<center>
+```{r q4_ibu_medians, fig.height= 10, echo = FALSE}
 #Get Medians
-
 state_ibu_medians <- tapply(MergedBrewing$IBU, MergedBrewing$State, median, na.rm = T)
 state_ibu_medians <- data.frame(state_ibu_medians)
 state_ibu_medians <- na.omit(state_ibu_medians)
+
 #Reset Column Names
 setDT(state_ibu_medians , keep.rownames = TRUE)
 colnames(state_ibu_medians) <- c("State", "IBU_Medians")
 
 #Bar Plot
-plot1 <- theme(plot.title = element_text(face = "bold.italic",size= 12, color = "red",hjust=0.5), axis.text.x = element_text(size = 6, face ="bold.italic"), axis.text.y = element_text(size=6,face = "bold.italic"))
+plot1 <- ggplot(data = state_ibu_medians, aes(x=reorder(State,-IBU_Medians), y=IBU_Medians, width = .5,fill=State)) +
+         geom_bar(stat="identity") + 
+         labs(title="Median IBU", x="State", y = "IBU")  + 
+         coord_flip() + 
+         labs(caption = "Note: IBU data for South Dakota was not available for analysis.")
 
-
-
-ggplot(data = state_ibu_medians, aes(x=reorder(State,-IBU_Medians), y=IBU_Medians, width = .5,fill=State)) +  geom_bar(stat="identity") + labs(title="Median IBU", x="State", y = "IBU")  + plot1 + coord_flip() + 
-  labs(caption = "Note: IBU data for South Dakota was not available for analysis.")
-    
-
-#p + geom_bar(stat="identity") + theme1
-#    coord_flip() 
+plot1 + theme(plot.title = element_text(face = "bold.italic",size= 12, color = "red",hjust=0.5), 
+              axis.text.x = element_text(size = 6, face ="bold.italic"), 
+              axis.text.y = element_text(size=6,face = "bold.italic"),
+              legend.position = "none")
 ```
 
+<br/>
 
-```{r q4_abv_medians, fig.height= 10}
+```{r q4_abv_medians, fig.height= 10, echo = FALSE}
 
 #ABV Medians
 state_abv_medians <- tapply(MergedBrewing$ABV, MergedBrewing$State, median, na.rm = T)
@@ -138,21 +150,25 @@ setDT(state_abv_medians , keep.rownames = TRUE)
 colnames(state_abv_medians) <- c("State", "ABV_Medians")
 
 #Bar Plot
-plot1 <- theme(plot.title = element_text(face = "bold.italic",size= 12, color = "red",hjust=0.5), axis.text.x = element_text(size = 6, face ="bold.italic"), axis.text.y = element_text(size=6,face = "bold.italic"))
+plot1 <- ggplot(data = state_abv_medians, aes(x=reorder(State,-ABV_Medians), y=ABV_Medians, width = .5,fill=State)) +
+         geom_bar(stat="identity") + 
+         labs(title="Median ABV", x="State", y = "ABV")  + 
+         coord_flip()
 
-
-
-ggplot(data = state_abv_medians, aes(x=reorder(State,-ABV_Medians), y=ABV_Medians, width = .5,fill=State)) +  geom_bar(stat="identity") + labs(title="Median ABV", x="State", y = "ABV")  + plot1 + coord_flip()
+plot1 + theme(plot.title = element_text(face = "bold.italic",size= 12, color = "red",hjust=0.5), 
+              axis.text.x = element_text(size = 6, face ="bold.italic"), 
+              axis.text.y = element_text(size=6,face = "bold.italic"),
+              legend.position = "none")
 ```
-
+</center>
 
 <br/>
 
-#### **State preferences for high alcohol content / bitterness.** 
+<!--------------- QUESTION 5 ----------------------->
+
+### **State preferences for high alcohol content/bitterness** 
 
 Given that our client\'s beer is very strong and bitter, we would like to study markets with these same specs. Through our analysis, we identify the below states as having the max Alcohol By Volume and the max IBU. 
-
-<br/> 
 
 ```{r q5}
 #State with max ABV
@@ -166,44 +182,66 @@ We can see that Colorado has the highest ABV value and Oregon has the highest IB
 
 <br/>  
 
-#### **Further analysis of Alcohol By Volume.** 
+<!--------------- QUESTION 6 ----------------------->
+
+### **Further analysis of Alcohol By Volume** 
 
 In conducting our analysis, it is useful to examine the statistics of the Alcohol By Volume in order to make well informed comparisons.
-<br/> 
+
 ```{r q6}
 summary(MergedBrewing$ABV)
 ```
 
 <br />
 
-Perhaps a boxplot is more helpful to visualize the same data:
+A boxplot is more helpful to visualize the same data:
 
-```{r}
+<center>
+```{r, echo = FALSE}
 #Plot a horizontal boxplot of the ABV summary stats.
-
 boxplot(MergedBrewing$ABV,data = MergedBrewing, main = "Alcohol by Volume", horizontal = TRUE)
 ```
+</center>
 
 <br/>
 
 As we can see from the summary statistics and dataplot, a full 50% of the measured beers fall between 0.05 and 0.07 ABV. Our recommendation is that Pale as a Ghost should not have an alcohol value far outside of this range.
 
-<br />
+<br/>
 
-#### **Is there a relationship between Bitterness and Alcohol by Volume?** 
+<!--------------- QUESTION 7 ----------------------->
+
+### **Is there a relationship between Bitterness and Alcohol by Volume?** 
 
 Our client requested an analysis of the relationship between Bitterness and Alcohol by Volume in order to help drive their future manufacturing decisions and to refine their brewing processes. In order to help answer this question, Unique Consulting offer the below analysis. 
 
-<br /> 
+<br/> 
 
-```{r q7}
-scatterplot = ggscatter(na.omit(MergedBrewing),x="ABV",y="IBU",add="reg.line",conf.int="T",cor.coef="T",color = "blue",ellipse.type="norm",ellipse="F")+theme_minimal()+ stat_density_2d(aes(fill = ..level..), geom = "polygon")+scale_fill_continuous(low="lavenderblush", high="purple")
+<center>
+```{r q7, echo = FALSE}
+scatterplot <- ggscatter(na.omit(MergedBrewing), 
+                         x="ABV",
+                         y="IBU", 
+                         add="reg.line", 
+                         conf.int="T", 
+                         cor.coef="T", 
+                         color = "blue",
+                         ellipse.type="norm",
+                         ellipse="F") + 
+    theme_minimal() + 
+    stat_density_2d(aes(fill = ..level..), geom = "polygon") + 
+    scale_fill_continuous(low="lavenderblush", high="purple")
 
 suppressWarnings(print(scatterplot))
 ```
+</center>
+
+<br/>  
 
 As we can see from the scatterplot above and the over-laid density plot, there appears to be some indication of a linear relationship between Alcohol by Volume (ABV) and International Bitterness Units (IBU). Because this is a linear relationship, we are able to execute statistical tests that define the correlation of these two characteristics more explicitly. 
 
 The R-value shown above of 0.67 indicates a relatively strong linear relationship between the two variables. Also, a correlation test indicates that the probability that there is zero correlation between the two variables to be very small (p < 2.2 x 10**-16). 
 
 We realize that this is all very "nerd-speak", but when it comes down to it, we interpret this to mean that there is some correlation between the Bitterness and Alcohol by Volume and that this could be used to make predictions -- for example -- about the taste of a beer with a specific alcohol content. 
+
+<br/>  
