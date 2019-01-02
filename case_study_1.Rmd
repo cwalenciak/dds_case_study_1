@@ -55,8 +55,6 @@ As we can see from the above, Colorado's market is likely saturated. States like
 
 #### Preparing the data for deeper analysis:
 
-<br/>
-
 In order to provide the best possible data for our customer, Unique Consulting drew upon multiple data sets to best inform their decision making. Unfortunately, this data required some work to put in a proper form to support analysis. No billable hours were spent on these tasks. Tasks included:
 
 1. Merging the data sets into a single data set capable of allowing comparisons needed.
@@ -103,8 +101,6 @@ At some points in the analysis below, the missing values are not considered. We'
 <br/>
 
 #### The market for "Pale as a Ghost" Pale Ale:
-
-<br/>
 
 The "Pale as a Ghost" pale ale is the flagship beer for The Hoppy Specter Brewery and it scores high in ABV (alchol by volume) and IBU (bitterness). We would like to get a broad overview of the general taste trends for each state when it comes to ABV and IBU. The plots below show the median ABV and IBU for each state.
 
@@ -155,7 +151,6 @@ ggplot(data = state_abv_medians, aes(x=reorder(State,-ABV_Medians), y=ABV_Median
 
 #### State preferences for high alcohol content / bitterness. 
 
-<br/> 
 Given that our client\'s beer is very strong and bitter, we would like to study markets with these same specs. Through our analysis, we identify the below states as having the max Alcohol By Volume and the max IBU. 
 
 <br/> 
@@ -174,13 +169,14 @@ We can see that Colorado has the highest ABV value and Oregon has the highest IB
 
 #### Further analysis of Alcohol By Volume. 
 
-<br/> 
 In conducting our analysis, it is useful to examine the statistics of the Alcohol By Volume in order to make well informed comparisons.
 <br/> 
 ```{r q6}
 summary(MergedBrewing$ABV)
 ```
+
 <br />
+
 Perhaps a boxplot is more helpful to visualize the same data:
 
 ```{r}
@@ -196,7 +192,6 @@ As we can see from the summary statistics and dataplot, a full 50% of the measur
 <br />
 
 #### Is there a relationship between Bitterness and Alcohol by Volume? 
-<br/>
 
 Our client requested an analysis of the relationship between Bitterness and Alcohol by Volume in order to help drive their future manufacturing decisions and to refine their brewing processes. In order to help answer this question, Unique Consulting offer the below analysis. 
 
