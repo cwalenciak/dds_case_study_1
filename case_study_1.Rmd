@@ -32,7 +32,12 @@ names(Breweries)[1] = "Brewery_id"
 ### **Introduction**
 The Hoppy Specter Brewery is looking to expand into a new U.S. State with their world-renowned heavily hopped "Pale as a Ghost" pale ale. Given the overwhelming bitterness of both their ethos and beer, they need to find the best home for their new location. They've asked Unique Consulting Svcs., LLC. to help them identify the new location.
 
-<br/>
+<br/>  
+
+
+<!-------------------------------------------------->
+<!--------------- QUESTION 1 ----------------------->
+<!-------------------------------------------------->
 
 ### **National brewery situation assessment** 
 Given the big increase in local breweries over the last several years we decided to take a look at the number of breweries in each state. While we would not recomend opening in an overly saturated market, we still think a place that has an established local brewery scene would be best. We wrote some code that helps us to identify the number of breweries present in each state.
@@ -46,9 +51,12 @@ knitr::kable(brew_count)
 
 As we can see from the above, Colorado's market is likely saturated. States like Pennsylvania, Massachussets, Washington or Indiana might be more ripe for new opportunities.
 
-<!--------------- QUESTION 2 ----------------------->
+<br/>  
 
-<br/>
+
+<!-------------------------------------------------->
+<!--------------- QUESTION 2 ----------------------->
+<!-------------------------------------------------->
 
 ### **Preparing the data for deeper analysis**
 In order to provide the best possible data for our customer, Unique Consulting drew upon multiple data sets to best inform their decision making. Unfortunately, this data required some work to put in a proper form to support analysis. No billable hours were spent on these tasks. Tasks included:
@@ -60,11 +68,11 @@ Merging the data sets into a single data set capable of allowing comparisons nee
 
 ```{r q2 }
 # Merge the two dataframes
-MergedBrewing = merge(Beers,Breweries, by = "Brewery_id")
+MergedBrewing <- merge(Beers,Breweries, by = "Brewery_id")
 
 # Fix the names conflict
-names(MergedBrewing)[2] = "Beer_Name"
-names(MergedBrewing)[8] = "Brewery_Name"
+names(MergedBrewing)[2] <- "Beer_Name"
+names(MergedBrewing)[8] <- "Brewery_Name"
 ```
 
 <br/>  
@@ -93,7 +101,9 @@ knitr::kable(tail(MergedBrewing, 6))
 
 <br/>
 
+<!-------------------------------------------------->
 <!--------------- QUESTION 3 ----------------------->
+<!-------------------------------------------------->
 
 ##### **Missing Values:** 
 In order to prepare for this analysis, we also needed to identify the number of values missing in the data set. We found the following results:
@@ -107,7 +117,9 @@ knitr::kable(colSums(is.na(MergedBrewing)))
 
 <br/>
 
+<!-------------------------------------------------->
 <!--------------- QUESTION 4 ----------------------->
+<!-------------------------------------------------->
 
 ### **The market for "Pale as a Ghost" Pale Ale**
 
@@ -164,7 +176,9 @@ plot1 + theme(plot.title = element_text(face = "bold.italic",size= 12, color = "
 
 <br/>
 
+<!-------------------------------------------------->
 <!--------------- QUESTION 5 ----------------------->
+<!-------------------------------------------------->
 
 ### **State preferences for high alcohol content/bitterness** 
 
@@ -182,7 +196,10 @@ We can see that Colorado has the highest ABV value and Oregon has the highest IB
 
 <br/>  
 
+
+<!-------------------------------------------------->
 <!--------------- QUESTION 6 ----------------------->
+<!-------------------------------------------------->
 
 ### **Further analysis of Alcohol By Volume** 
 
@@ -209,7 +226,9 @@ As we can see from the summary statistics and dataplot, a full 50% of the measur
 
 <br/>
 
+<!-------------------------------------------------->
 <!--------------- QUESTION 7 ----------------------->
+<!-------------------------------------------------->
 
 ### **Is there a relationship between Bitterness and Alcohol by Volume?** 
 
