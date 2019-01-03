@@ -1,11 +1,21 @@
 ---
-title: "Case Study 1"
+title: "unique Data Consulting: Analysis for Hoppy Specter Brewing, Co."
+author: 
+- Aditya Garapati
+- Brian Waite
+- Carl Walenciak
 output: html_document
 ---
-This needs the libraries "reshape" and "ggplot2"  
+
+```{r, echo=FALSE}
+htmltools::img(src = knitr::image_uri("images/uniqueLogoSmall.png"), 
+               alt = 'logo', 
+               style = 'position:absolute; top:0; right:0; padding:10px;')
+```
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+#Required libraries to build this document. 
 
 library(ggplot2)
 library(plyr)
@@ -263,4 +273,24 @@ The R-value shown above of 0.67 indicates a relatively strong linear relationshi
 
 We realize that this is all very "nerd-speak", but when it comes down to it, we interpret this to mean that there is some correlation between the Bitterness and Alcohol by Volume and that this could be used to make predictions -- for example -- about the taste of a beer with a specific alcohol content. 
 
-<br/>  
+<br/> 
+
+### **Conclusion** 
+
+In looking at all of the above analysis, we can find a series of clues that help guide our recommendation of where the launch of Pale as a Ghost Pale Ale should occur. 
+
+1. The national brewery assessment allow us to identify regions where the brewery market is likely over-saturated or where beer is not very popular. We can identify a "goldilocks" range where the beer culture / market is "just right" to support a new product. 
+
+2. In looking at median IBU and ABV values, we can identify preferences by State, allowing us to avoid the extremes and find IBU and ABV values that are likely to reach the widest audience. 
+
+3. Given what appears to be a strong correlation between ABV and IBU, Hoppy Specter Brewing can be confident that if they brew to the 0.5-0.7 range, the final product will have an IBU value that appeals to a wide variety of customers. 
+
+<br/> 
+
+### **Recommendation**
+
+While a number of potential locations may be viable for the new "Pale as a Ghost" product, unique Data Consulting recommends Massachusetts as the primary launch location. 
+
+Massachusetts offers a strong beer culture, aligned customer preference, and does not demonstrate the characteristics of a saturated market. 
+
+<br /> 
