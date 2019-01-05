@@ -15,7 +15,6 @@ The Hoppy Specter Brewery is looking to expand into a new U.S. State with their 
 * case_study_1.RMD -- A complete analysis in support of Hoppy Specter's requirements
 * case_study_1.html -- An HTML rendering of this analysis
 * CODEBOOK.RMD -- Documentation of variables and datastructures used in the code to conduct this analysis. 
-* CODEBOOK.html -- An HTML rendering of the CODEBOOK. 
 * data/ -- A directory containing data provided by the customer to support this analysis. 
 * images/ -- A directory of images used in the analysis files. 
 * presentation.pptx -- A client-focused presentation of the results of our analysis. 
