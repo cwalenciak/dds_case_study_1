@@ -7,6 +7,8 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(data.table)
+library(plyr)
 ```
 
 # Codebook: Hoppy Specter Brewery Analysis
@@ -101,6 +103,72 @@ The final data frame contains the variables and types as follows:
 ```{r}
 variableName = names(MergedBrewing)
 types = sapply(MergedBrewing,class)
+variables = rbind (variableName,types)
+knitr::kable(variables)
+```
+
+####Additional Data Frames Used / Created
+
+One data frame is created to show the number of breweries in each state: 
+
+```{r}
+
+brew_count <- count(Breweries$State)
+colnames(brew_count) <- c("State", "Brewery_Count")
+brew_count <- brew_count[with(brew_count,order(-Brewery_Count)), ]
+knitr::kable(brew_count)
+```
+
+It has types: 
+
+```{r}
+
+variableName = names(brew_count)
+types = sapply(brew_count,class)
+variables = rbind (variableName,types)
+knitr::kable(variables)
+```
+
+Two additional data frames are used to identify and track the ABV and IBU Median values per state. 
+
+```{r}
+
+# Obtain ABV Data: 
+
+#ABV Medians
+state_abv_medians <- tapply(MergedBrewing$ABV, MergedBrewing$State, median, na.rm = T)
+state_abv_medians <- data.frame(state_abv_medians)
+
+#Reset Column Names
+setDT(state_abv_medians , keep.rownames = TRUE)
+colnames(state_abv_medians) <- c("State", "ABV_Medians")
+
+head(state_abv_medians)
+
+# Obtain IBU Data: 
+
+#Get Medians
+state_ibu_medians <- tapply(MergedBrewing$IBU, MergedBrewing$State, median, na.rm = T)
+state_ibu_medians <- data.frame(state_ibu_medians)
+state_ibu_medians <- na.omit(state_ibu_medians)
+
+#Reset Column Names
+setDT(state_ibu_medians , keep.rownames = TRUE)
+colnames(state_ibu_medians) <- c("State", "IBU_Medians")
+
+head(state_ibu_medians)
+```
+
+The data types in these tables are: 
+
+```{r}
+variableName = names(state_ibu_medians)
+types = sapply(state_ibu_medians,class)
+variables = rbind (variableName,types)
+knitr::kable(variables)
+
+variableName = names(state_abv_medians)
+types = sapply(state_abv_medians, class)
 variables = rbind (variableName,types)
 knitr::kable(variables)
 ```

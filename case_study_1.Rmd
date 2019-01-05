@@ -39,6 +39,8 @@ names(Breweries)[1] = "Brewery_id"
 
 <br/>
 
+<!--Meets Part a) and b) intent--> 
+
 ### **Introduction**
 The Hoppy Specter Brewery is looking to expand into a new U.S. State with their world-renowned heavily hopped "Pale as a Ghost" pale ale. Given the overwhelming bitterness of both their ethos and beer, they need to find the best home for their new location. They've asked Unique Consulting Svcs., LLC. to help them identify the new location.
 
@@ -269,11 +271,13 @@ suppressWarnings(print(scatterplot))
 
 As we can see from the scatterplot above and the over-laid density plot, there appears to be some indication of a linear relationship between Alcohol by Volume (ABV) and International Bitterness Units (IBU). Because this is a linear relationship, we are able to execute statistical tests that define the correlation of these two characteristics more explicitly. 
 
-The R-value shown above of 0.67 indicates a relatively strong linear relationship between the two variables. Also, a correlation test indicates that the probability that there is zero correlation between the two variables to be very small (p < 2.2 x 10**-16). 
+The R-value shown above of 0.67 indicates some linear relationship between the two variables. Also, a correlation test indicates that the probability that there is zero correlation between the two variables to be very small (p < 2.2 x 10**-16). 
 
 We realize that this is all very "nerd-speak", but when it comes down to it, we interpret this to mean that there is some correlation between the Bitterness and Alcohol by Volume and that this could be used to make predictions -- for example -- about the taste of a beer with a specific alcohol content. 
 
 <br/> 
+
+<!----Meets Part f) intent -----> 
 
 ### **Conclusion** 
 
