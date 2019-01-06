@@ -1,5 +1,8 @@
 ---
-title: "unique Data Consulting: Analysis for Hoppy Specter Brewing, Co."
+title: |
+  | Analysis for Hoppy Specter 
+  | Brewing, Co.
+  
 author: 
 - Aditya Garapati
 - Brian Waite
@@ -10,7 +13,7 @@ output: html_document
 ```{r, echo=FALSE}
 htmltools::img(src = knitr::image_uri("images/uniqueLogoSmall.png"), 
                alt = 'logo', 
-               style = 'position:absolute; top:0; right:0; padding:10px;')
+               style = 'position:absolute; top:0; right:100px; padding:0px;')
 ```
 
 ```{r setup, include=FALSE}
